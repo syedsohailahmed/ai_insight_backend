@@ -38,8 +38,8 @@ export default async function handler(req, res) {
     const reviewSummary = await summarizeReviews(reviews);
 
     res.status(200).json({
-      result: { raw: analysis },
-      reviews: reviewSummary,
+      analysis,        // now object
+      reviewSummary,   // now object
       similar: similarProducts,
     });
   } catch (err) {

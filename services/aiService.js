@@ -86,15 +86,27 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
 }
 
 export async function summarizeReviews(reviews) {
-  if (!reviews || reviews.length === 0) {
-    return { pros: [], cons: [], rating: 0 };
+  if (!reviews) return "No reviews available.";
+
+  // FIX: If reviews arrive as a single string containing an array → parse it
+  if (typeof reviews === "string") {
+    try {
+      reviews = JSON.parse(reviews.replace(/'/g, '"'));
+    } catch (e) {
+      console.error("Failed to parse reviews string:", e);
+      return "No reviews available.";
+    }
   }
 
-  const text = reviews.map(r => r.review).join("\n");
+  // Ensure it's an array
+  if (!Array.isArray(reviews) || reviews.length === 0) {
+    return "No reviews available.";
+  }
+
+  const text = reviews.join("\n");
 
   const prompt = `
-Summarize the following reviews. ALWAYS respond ONLY with valid JSON:
-
+Summarize these customer reviews into JSON with fields:
 {
   "pros": [],
   "cons": [],
@@ -103,7 +115,7 @@ Summarize the following reviews. ALWAYS respond ONLY with valid JSON:
 
 Reviews:
 ${text}
-`;
+  `;
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
@@ -114,22 +126,22 @@ ${text}
     body: JSON.stringify({
       model: "openai/gpt-5.1-chat",
       messages: [{ role: "user", content: prompt }],
-      max_tokens: 400,
-      temperature: 0.4,
+      max_tokens: 300,
+      temperature: 0.3,
     }),
   });
 
   const data = await response.json();
-
   const raw = data.choices?.[0]?.message?.content;
-  if (!raw) throw new Error("AI failed (summaries)");
+
+  if (!raw) return "No response";
 
   try {
-    return JSON.parse(raw);     // ⬅️ structured output
-  } catch (err) {
-    console.error("JSON parse error:", raw);
-    throw new Error("Invalid AI JSON");
+    return JSON.parse(raw);   // AI returns pure JSON
+  } catch {
+    return { pros: [], cons: [], rating: 0 };
   }
 }
+
 
 

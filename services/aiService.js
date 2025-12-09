@@ -38,14 +38,13 @@ export async function generateProductAnalysis(product, similarProducts = []) {
   const { title, description, price } = product;
 
   const prompt = `
-You are an AI product analyst. ALWAYS respond in valid JSON using this structure:
+You are an AI product analyst. ALWAYS respond in valid JSON using this structure and return buyScore out of 100:
 
 {
   "summary": "",
   "pros": [],
   "cons": [],
   "hiddenIssues": [],
-  "alternatives": [],
   "priceInsight": "",
   "buyScore": 0
 }

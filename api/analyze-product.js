@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     await upsertVector(url, embedding, { title, description, price, url });
 
     // Query similar products
-    const similarProducts = await querySimilar(embedding, 5);
+    const similarProducts = await querySimilar(embedding, 3);
 
     // Generate AI analysis
     const analysis = await generateProductAnalysis({ title, description, price }, similarProducts);

@@ -25,11 +25,11 @@ export default async function handler(req, res) {
     // Create embedding
     const embedding = await createEmbedding(fullText);
 
-    // Upsert into Pinecone
-    await upsertVector(url, embedding, { title, description, price, url });
-
     // Query similar products
     const similarProducts = await querySimilar(embedding, 3);
+    
+    // Upsert into Pinecone
+    await upsertVector(url, embedding, { title, description, price, url });
 
     // Generate AI analysis
     const analysis = await generateProductAnalysis({ title, description, price }, similarProducts);
@@ -38,8 +38,8 @@ export default async function handler(req, res) {
     const reviewSummary = await summarizeReviews(reviews);
 
     res.status(200).json({
-      analysis,        // now object
-      reviewSummary,   // now object
+      analysis,
+      reviewSummary,
       similar: similarProducts,
     });
   } catch (err) {

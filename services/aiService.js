@@ -64,7 +64,7 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "mistralai/devstral-2512:free",
+      model: "amazon/nova-2-lite-v1:free",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 500,
       temperature: 0.7,

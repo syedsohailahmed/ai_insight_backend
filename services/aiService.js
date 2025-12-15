@@ -74,15 +74,18 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
   const data = await response.json();
 
   const raw = data.choices?.[0]?.message.content;
-  if (!raw) {
-    console.log(data);
-    throw new Error("AI failed (analysis)");
-  }
+  // if (!raw) {
+  //   console.log(data);
+  //   throw new Error("AI failed (analysis)");
+  // }
 
   try {
+    let jsonString = raw
+    .replace(/^```json\s*/, '')  // remove ```json at the start
+    .replace(/```$/, '');         // remove ``` at the end
     console.log('data', data);
     console.log('raw', raw);
-    return JSON.parse(raw);     // ⬅️ structured output
+    return JSON.parse(jsonString);     // ⬅️ structured output
   } catch (err) {
     console.error("JSON parse error:", raw);
     throw new Error("Invalid AI JSON");

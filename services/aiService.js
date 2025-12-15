@@ -64,7 +64,7 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "openai/gpt-5.1-chat",
+      model: "mistralai/devstral-2512:free",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 500,
       temperature: 0.7,
@@ -75,7 +75,7 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
 
   const raw = data.choices?.[0]?.message?.content;
   if (!raw) {
-    console.log('No Data', data);
+    console.log(data);
     throw new Error("AI failed (analysis)");
   }
 

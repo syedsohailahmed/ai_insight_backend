@@ -64,7 +64,7 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "amazon/nova-2-lite-v1:free",
+      model: "mistralai/devstral-2512:free",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 500,
       temperature: 0.7,
@@ -73,7 +73,7 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
 
   const data = await response.json();
 
-  const raw = data.choices?.[0]?.message;
+  const raw = data.choices?.[0]?.message.content;
   if (!raw) {
     console.log(data);
     throw new Error("AI failed (analysis)");
@@ -82,7 +82,7 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
   try {
     console.log('data', data);
     console.log('raw', raw);
-    return JSON.parse(raw.content);     // ⬅️ structured output
+    return JSON.parse(raw);     // ⬅️ structured output
   } catch (err) {
     console.error("JSON parse error:", raw);
     throw new Error("Invalid AI JSON");

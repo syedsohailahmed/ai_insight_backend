@@ -81,7 +81,8 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
 
   try {
     console.log('data', data);
-    return JSON.parse(raw);     // ⬅️ structured output
+    console.log('raw', raw);
+    return raw;     // ⬅️ structured output
   } catch (err) {
     console.error("JSON parse error:", raw);
     throw new Error("Invalid AI JSON");

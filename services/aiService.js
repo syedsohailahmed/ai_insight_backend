@@ -74,7 +74,10 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
   const data = await response.json();
 
   const raw = data.choices?.[0]?.message?.content;
-  if (!raw) throw new Error("AI failed (analysis)");
+  if (!raw) {
+    console.log('Error', raw);
+    throw new Error("AI failed (analysis)");
+  }
 
   try {
     return JSON.parse(raw);     // ⬅️ structured output

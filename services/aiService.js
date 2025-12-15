@@ -75,7 +75,7 @@ Similar products: ${similarProducts.map(p => p.title).join(", ") || "None"}
 
   const raw = data.choices?.[0]?.message?.content;
   if (!raw) {
-    console.log('Error', raw);
+    console.log('No Data', data);
     throw new Error("AI failed (analysis)");
   }
 

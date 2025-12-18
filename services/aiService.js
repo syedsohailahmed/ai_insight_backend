@@ -141,7 +141,10 @@ ${text}
   if (!raw) return "No response";
 
   try {
-    return JSON.parse(raw);   // AI returns pure JSON
+    const parseData = JSON.parse(raw);
+    console.log('review summary', data);
+    console.log('parse data', parseData)
+    return parseData;   // AI returns pure JSON
   } catch {
     return { pros: [], cons: [], rating: 0 };
   }

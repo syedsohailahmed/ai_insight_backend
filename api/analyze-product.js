@@ -20,16 +20,16 @@ export default async function handler(req, res) {
     const { title, description, price, url, reviews } = req.body;
     if (!title) return res.status(400).json({ error: "Title is required" });
 
-    // const fullText = `${title}\n${description}`;
+    const fullText = `${title}\n${description}`;
 
     // Create embedding
-    // const embedding = await createEmbedding(fullText);
+    const embedding = await createEmbedding(fullText);
 
     // Query similar products
-    // const similarProducts = await querySimilar(embedding, 3);
+    const similarProducts = await querySimilar(embedding, 3);
     
     // Upsert into Pinecone
-    // await upsertVector(url, embedding, { title, description, price, url });
+    await upsertVector(url, embedding, { title, description, price, url });
 
     // Generate AI analysis
     const analysis = await generateProductAnalysis({ title, description, price }, similarProducts);
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       analysis,
       reviewSummary,
-      similar: [],
+      similar: similarProducts,
     });
   } catch (err) {
     console.error(err);

@@ -93,21 +93,21 @@ export async function summarizeReviews(reviews) {
   if (!reviews) return "No reviews available.";
 
   // FIX: If reviews arrive as a single string containing an array → parse it
-  if (typeof reviews === "string") {
-    try {
-      reviews = JSON.parse(reviews.replace(/'/g, '"'));
-    } catch (e) {
-      console.error("Failed to parse reviews string:", e);
-      return "No reviews available.";
-    }
-  }
+  // if (typeof reviews === "string") {
+  //   try {
+  //     reviews = JSON.parse(reviews.replace(/'/g, '"'));
+  //   } catch (e) {
+  //     console.error("Failed to parse reviews string:", e);
+  //     return "No reviews available.";
+  //   }
+  // }
 
   // Ensure it's an array
-  if (!Array.isArray(reviews) || reviews.length === 0) {
-    return "No reviews available.";
-  }
+  // if (!Array.isArray(reviews) || reviews.length === 0) {
+  //   return "No reviews available.";
+  // }
 
-  const text = reviews.join("\n");
+  // const text = reviews.join("\n");
 
   const prompt = `
 Summarize these customer reviews into JSON with fields:
@@ -118,7 +118,7 @@ Summarize these customer reviews into JSON with fields:
 }
 
 Reviews:
-${text}
+${reviews}
   `;
 
   const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -128,7 +128,7 @@ ${text}
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "openai/gpt-5.1-chat",
+      model: "openai/gpt-4o-mini",
       messages: [{ role: "user", content: prompt }],
       max_tokens: 300,
       temperature: 0.3,
@@ -137,14 +137,12 @@ ${text}
 
   const data = await response.json();
   const raw = data.choices?.[0]?.message?.content;
-
+  console.log('reviews data', data);
+  console.log('reviews raw', data.choices?.[0]?.message);
   if (!raw) return "No response";
 
   try {
-    const parseData = JSON.parse(raw);
-    console.log('review summary', data);
-    console.log('parse data', parseData)
-    return parseData;   // AI returns pure JSON
+    return JSON.parse(raw.replace(/^```json\s*/, '')?.replace(/```$/, '')?.trim());
   } catch {
     return { pros: [], cons: [], rating: 0 };
   }
